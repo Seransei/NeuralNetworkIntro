@@ -62,13 +62,67 @@ void testLanguage()
 
 	fann_type *calc_out;
 	fann_type input[5];
-	input[0] = 12.2;
-	input[1] = 9.84;
-	input[2] = 8.66;
-	input[3] = 6.3;
-	input[4] = 8.66;
+	input[0] = 13.46;
+	input[1] = 15.21;
+	input[2] = 8.04;
+	input[3] = 6.64;
+	input[4] = 6.99;
 
 	calc_out = fann_run(ann, input);
 
 	printf("%f %f %f\n", calc_out[0], calc_out[1], calc_out[2]);
+
+	if (calc_out[0] >= 0.7)
+		printf("Francais ?\n");
+	if (calc_out[1] >= 0.7)
+		printf("Anglais ?\n");
+	if (calc_out[2] >= 0.7)
+		printf("Espagnol ?\n");
+}
+
+float* computeFrequencies(char* filename) 
+{
+	std::ifstream in;
+	char buffer;
+
+	in.open(filename);
+
+	fann_type input[5];
+	input[0] = 0;
+	input[1] = 0;
+	input[2] = 0;
+	input[3] = 0;
+	input[4] = 0;
+
+	int nChar = 0;
+
+	while (!in.eof()) 
+	{
+		buffer = in.get();
+		switch (buffer) 
+		{
+		case 'E':
+		case 'e':
+			input[0]++;
+		case 'A':
+		case 'a':
+			input[1]++;
+		case 'N':
+		case 'n':
+			input[2]++;
+		case 'O':
+		case 'o':
+			input[3]++;
+		case 'I':
+		case 'i':
+			input[4]++;
+		}
+		nChar++;
+	}
+
+	for (int i = 0; i < 5; i++) {
+		input[i] /= nChar;
+	}
+
+	return input;
 }
